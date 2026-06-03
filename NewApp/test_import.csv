@@ -1,0 +1,5 @@
+asset_tag,model,status,location,notes
+ASSET-CSV-001,Laptop Pro 14,Ready to Deploy,Office A,Import via CSV
+ASSET-CSV-002,Monitor 4K,In Use,Office B,Import via CSV
+ASSET-CSV-003,Keyboard Mechanical,Ready to Deploy,Storage,Import via CSV
+ASSET-CSV-004,Mouse Wireless,Pending,Storage,Import via CSV

@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "name": "Ordinateur Portable Test",
+        "category": "Hardware",
+        "status": "Ready to Deploy"
+    },
+    {
+        "id": 2,
+        "name": "Licence Office 365",
+        "category": "Software",
+        "status": "Allocated"
+    }
+]

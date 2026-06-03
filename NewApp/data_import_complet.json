@@ -1,0 +1,30 @@
+[
+    {
+        "asset_tag": "ASSET-001",
+        "model": "Dell XPS 15",
+        "status": "Ready to Deploy",
+        "location": "Paris Office",
+        "notes": "Nouvel arrivage"
+    },
+    {
+        "asset_tag": "ASSET-002",
+        "model": "MacBook Pro M3",
+        "status": "In Use",
+        "location": "Remote",
+        "notes": "Assigné au service Design"
+    },
+    {
+        "asset_tag": "ASSET-003",
+        "model": "iPhone 15 Pro",
+        "status": "Pending",
+        "location": "Storage A",
+        "notes": "En attente de configuration"
+    },
+    {
+        "asset_tag": "ASSET-004",
+        "model": "Monitor Dell 27\"",
+        "status": "Ready to Deploy",
+        "location": "Paris Office",
+        "notes": "Quantité : 10"
+    }
+]
