@@ -151,6 +151,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     );
 
+     Route::group(['prefix' => 'reset'], function () {
+        Route::post('all', [Api\ResetController::class, 'resetAll'])->name('api.reset.all');
+        Route::post('assets', [Api\ResetController::class, 'resetAssets'])->name('api.reset.assets');
+        Route::post('accessories', [Api\ResetController::class, 'resetAccessories'])->name('api.reset.accessories');
+        Route::post('components', [Api\ResetController::class, 'resetComponents'])->name('api.reset.components');
+        Route::post('consumables', [Api\ResetController::class, 'resetConsumables'])->name('api.reset.consumables');
+        Route::post('licenses', [Api\ResetController::class, 'resetLicenses'])->name('api.reset.licenses');
+    }); // end reset API routes
+
+
     /**
      * Categories API routes
      */
@@ -1448,5 +1458,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     )->name('api.files.destroy')
         ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|suppliers|users|companies|departments']);
+
+    /**
+     * Reset API routes - Réinitialiser les données
+     */
+    Route::group(['prefix' => 'reset'], function () {
+        Route::post('all', [Api\ResetController::class, 'resetAll'])->name('api.reset.all');
+        Route::post('assets', [Api\ResetController::class, 'resetAssets'])->name('api.reset.assets');
+        Route::post('accessories', [Api\ResetController::class, 'resetAccessories'])->name('api.reset.accessories');
+        Route::post('components', [Api\ResetController::class, 'resetComponents'])->name('api.reset.components');
+        Route::post('consumables', [Api\ResetController::class, 'resetConsumables'])->name('api.reset.consumables');
+        Route::post('licenses', [Api\ResetController::class, 'resetLicenses'])->name('api.reset.licenses');
+    }); // end reset API routes
 
 }); // end API routes

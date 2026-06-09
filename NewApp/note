@@ -1,0 +1,31 @@
+views : code itambarany front sy back 
+tss reutilisabiliter 
+template : vue 
+script : js+vue(20%)
+
+server/index.js — c'est ton 
+serveur Express (Node.js). Il tourne sur 
+le port 3000. C'est le "backend" de NewApp.
+Il parle à SQLite et à Snipe-IT. Il n'a rien à
+voir avec Vue.
+
+src/router/index.js — c'est le router Vue. Il dit 
+à Vue "quand l'URL est /backoffice, 
+affiche ce composant". Il tourne dans le navigateur.
+
+
+Navigateur               Ton PC
+┌─────────────────┐      ┌──────────────────┐      ┌──────────────┐
+│ Vue (port 5173) │ ───► │ Express (port    │ ───► │  Snipe-IT    │
+│ router/index.js │      │ 3000)            │      │  (port 8000) │
+│ = navigation    │      │ server/index.js  │      │              │
+└─────────────────┘      │ = API + SQLite   │      └──────────────┘
+                         └──────────────────┘
+
+
+                         
+
+
+
+trenno : translat 
+
