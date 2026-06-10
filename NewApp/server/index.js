@@ -47,9 +47,34 @@ db.exec(`
     status TEXT DEFAULT 'New',
     priority TEXT DEFAULT 'Medium',
     items TEXT,
+    notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+  CREATE TABLE IF NOT EXISTS kanban_config (
+    status_key TEXT PRIMARY KEY,
+    malagasy_name TEXT,
+    bg_color TEXT
+  );
 `);
+
+// Migration de secours si la table tickets existait déjà sans la colonne notes
+try {
+  db.exec("ALTER TABLE tickets ADD COLUMN notes TEXT;");
+} catch (e) {
+  // Ignorer si la colonne existe déjà
+}
+
+// Initialisation des configurations Kanban par défaut si vides
+try {
+  const configCount = db.prepare('SELECT COUNT(*) as count FROM kanban_config').get().count;
+  if (configCount === 0) {
+    db.prepare("INSERT INTO kanban_config (status_key, malagasy_name, bg_color) VALUES ('New', 'vaovao', '#312e81')").run();
+    db.prepare("INSERT INTO kanban_config (status_key, malagasy_name, bg_color) VALUES ('In Progress', 'efa manao', '#854d0e')").run();
+    db.prepare("INSERT INTO kanban_config (status_key, malagasy_name, bg_color) VALUES ('Closed', 'vita', '#14532d')").run();
+  }
+} catch (e) {
+  console.error("Erreur d'initialisation kanban_config:", e.message);
+}
  
 // ─── Routes SQLite ────────────────────────────────────────────────────────────
  
@@ -141,12 +166,72 @@ app.get('/api/tickets', (req, res) => {
 });
  
 app.post('/api/tickets', (req, res) => {
-  const { num_ticket, date, heure, titre, description, status, priority, items } = req.body;
+  const { date, heure, titre, description, status, priority, items, notes } = req.body;
   try {
+    // Auto-générer un numéro de ticket lisible : TK-0001, TK-0002...
+    const lastTicket = db.prepare('SELECT num_ticket FROM tickets ORDER BY id DESC LIMIT 1').get();
+    let lastNum = 0;
+    if (lastTicket && lastTicket.num_ticket) {
+      const match = String(lastTicket.num_ticket).match(/(\d+)$/);
+      if (match) lastNum = parseInt(match[1], 10);
+    }
+    const newNum = lastNum + 1;
+    const num_ticket = `TK-${String(newNum).padStart(4, '0')}`;
+
     const result = db.prepare(
-      'INSERT INTO tickets (num_ticket, date, heure, titre, description, status, priority, items) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-    ).run(num_ticket, date, heure, titre, description, status || 'New', priority || 'Medium', items || '[]');
-    res.json({ id: result.lastInsertRowid, message: 'Ticket créé ✅' });
+      'INSERT INTO tickets (num_ticket, date, heure, titre, description, status, priority, items, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).run(num_ticket, date, heure, titre, description, status || 'New', priority || 'Medium', items || '[]', notes || '');
+    res.json({ id: result.lastInsertRowid, num_ticket, message: 'Ticket créé ✅' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/tickets/:id', (req, res) => {
+  const { id } = req.params;
+  const { titre, description, status, priority, items, notes } = req.body;
+  try {
+    db.prepare(
+      'UPDATE tickets SET titre = ?, description = ?, status = ?, priority = ?, items = ?, notes = ? WHERE id = ?'
+    ).run(titre, description, status, priority, items || '[]', notes || '', id);
+    res.json({ message: 'Ticket mis à jour ✅' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/tickets/:id/status', (req, res) => {
+  const { id } = req.params;
+  const { status, notes } = req.body;
+  try {
+    db.prepare('UPDATE tickets SET status = ?, notes = ? WHERE id = ?').run(status, notes || '', id);
+    res.json({ message: 'Statut du ticket mis à jour avec succès ✅' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/tickets/:id', (req, res) => {
+  const { id } = req.params;
+  try {
+    db.prepare('DELETE FROM tickets WHERE id = ?').run(id);
+    res.json({ message: 'Ticket supprimé ✅' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ─── Configuration Kanban ──────────────────────────────────────────────────
+
+app.get('/api/kanban/config', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM kanban_config').all();
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/kanban/config', (req, res) => {
+  const configs = req.body; // Array of { status_key, malagasy_name, bg_color }
+  try {
+    db.transaction(() => {
+      const stmt = db.prepare('INSERT OR REPLACE INTO kanban_config (status_key, malagasy_name, bg_color) VALUES (?, ?, ?)');
+      for (const conf of configs) {
+        stmt.run(conf.status_key, conf.malagasy_name, conf.bg_color);
+      }
+    })();
+    res.json({ message: 'Configuration Kanban enregistrée ✅' });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
  

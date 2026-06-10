@@ -1,16 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import AppBack from './AppBack.vue'
-import AppFront from './AppFront.vue'
-import Login from './pages/backOffice/Login.vue'
-import Dashboard from './pages/backOffice/Dashboard.vue'
-import DataReset from './pages/backOffice/DataReset.vue'
-import FileImport from './pages/backOffice/FileImport.vue'
-import Tickets from './pages/backOffice/Tickets.vue'
-//import Compteur from './pages/backOffice/Compteur.vue'
+import AppBack from '../AppBack.vue'
+import AppFront from '../AppFront.vue'
+import Login from '../pages/backOffice/Login.vue'
+import Dashboard from '../pages/backOffice/Dashboard.vue'
+import DataReset from '../pages/backOffice/DataReset.vue'
+import FileImport from '../pages/backOffice/FileImport.vue'
+import Tickets from '../pages/backOffice/Tickets.vue'
+import KanbanSettings from '../pages/backOffice/KanbanSettings.vue'
+//import Compteur from '../pages/backOffice/Compteur.vue'
 
-import ListeElements from './pages/frontOffice/ListeElements.vue'
-import CreerTicket from './pages/frontOffice/CreerTicket.vue'
+import ListeElements from '../pages/frontOffice/ListeElements.vue'
+import CreerTicket from '../pages/frontOffice/CreerTicket.vue'
+import Kanban from '../pages/frontOffice/Kanban.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +24,7 @@ const router = createRouter({
       children: [
         { path: '', component: ListeElements },
         { path: 'creer-ticket', component: CreerTicket },
+        { path: 'kanban', component: Kanban },
       ]
     },
 
@@ -40,6 +43,7 @@ const router = createRouter({
         { path: 'reset', component: DataReset },
         { path: 'import', component: FileImport },
         { path: 'tickets', component: Tickets },
+        { path: 'kanban-settings', component: KanbanSettings },
         //{ path: 'compteur', component: Compteur },
       ]
     },
