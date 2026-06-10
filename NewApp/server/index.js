@@ -351,13 +351,52 @@ app.post('/api/import/assets', async (req, res) => {
  
 // ─── Import tickets → SQLite ──────────────────────────────────────────────────
  
-app.post('/api/import/tickets', (req, res) => {
+app.post('/api/import/tickets', async (req, res) => {
   const { rows } = req.body;
   let success = 0;
   const errors = [];
- 
+
+  let hardwareList = [];
+  try {
+    const hardwareRes = await axios.get(`${SNIPE_URL}/api/v1/hardware?limit=1000`, { headers: snipeHeaders });
+    hardwareList = hardwareRes.data?.rows || [];
+  } catch (e) {
+    console.error("Impossible de charger les matériels de Snipe-IT pour la résolution d'import de tickets:", e.message);
+  }
+
   for (const row of rows) {
     try {
+      const rawItems = row.Items || row.items || '[]';
+      let parsedItems = [];
+      try {
+        parsedItems = typeof rawItems === 'string' ? JSON.parse(rawItems) : rawItems;
+      } catch (e) {
+        parsedItems = [];
+      }
+
+      if (!Array.isArray(parsedItems)) {
+        parsedItems = [];
+      }
+
+      // Résoudre les tags d'asset en objets complets pour le Kanban et le BackOffice
+      const resolvedItems = parsedItems.map(item => {
+        const tag = typeof item === 'string' ? item : (item.asset_tag || '');
+        const matched = hardwareList.find(h => h.asset_tag === tag);
+        if (matched) {
+          return {
+            id: matched.id,
+            asset_tag: matched.asset_tag,
+            nom: matched.name || matched.model?.name,
+            categorie: matched.category?.name || 'Asset'
+          };
+        }
+        return {
+          asset_tag: tag,
+          nom: 'Importé (en attente)',
+          categorie: 'Asset'
+        };
+      });
+
       db.prepare(`
         INSERT INTO tickets (num_ticket, date, heure, titre, description, status, priority, items)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -369,14 +408,14 @@ app.post('/api/import/tickets', (req, res) => {
         row.Description || row.description,
         row.Status || row.status || 'New',
         row.Priority || row.priority || 'Medium',
-        row.Items || row.items || '[]'
+        JSON.stringify(resolvedItems)
       );
       success++;
     } catch (err) {
-      errors.push({ num: row.Num_Ticket, erreur: err.message });
+      errors.push({ num: row.Num_Ticket || row.num_ticket, erreur: err.message });
     }
   }
- 
+
   res.json({
     status: errors.length === 0 ? 'success' : 'partiel',
     message: `${success}/${rows.length} tickets importés dans SQLite`,

@@ -167,10 +167,14 @@ const fetchTickets = async () => {
 const parseItems = (itemsJson) => {
   if (!itemsJson) return []
   try {
-    if (typeof itemsJson === 'string') {
-      return JSON.parse(itemsJson)
-    }
-    return itemsJson
+    const parsed = typeof itemsJson === 'string' ? JSON.parse(itemsJson) : itemsJson
+    if (!Array.isArray(parsed)) return []
+    return parsed.map(item => {
+      if (typeof item === 'string') {
+        return { asset_tag: item, nom: 'Importé via CSV', categorie: 'Asset' }
+      }
+      return item
+    })
   } catch (e) {
     return []
   }
