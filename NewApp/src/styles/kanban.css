@@ -1,0 +1,372 @@
+/* styles/kanban.css */
+.kanban-page { 
+  padding: 1.5rem; 
+}
+
+.btn-traduire {
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 0.6rem;
+  color: #a5b4fc;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-traduire:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+.btn-traduire-actif {
+  background: rgba(99, 102, 241, 0.35);
+  border-color: #6366f1;
+  color: #e0e7ff;
+}
+ 
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+ 
+.kanban-colonne {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s;
+}
+ 
+.colonne-survol {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.06) !important;
+}
+ 
+.colonne-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+ 
+.colonne-titre { 
+  font-weight: 600; 
+  font-size: 1rem; 
+}
+ 
+.colonne-count {
+  background: rgba(99,102,241,0.2);
+  color: #a5b4fc;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+ 
+.colonne-tickets {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+ 
+.ticket-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: grab;
+  color: #fff;
+  transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+}
+ 
+.ticket-card:active { 
+  opacity: 0.5; 
+  cursor: grabbing; 
+}
+
+.ticket-card:hover {
+  border-color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+}
+ 
+.ticket-titre { 
+  font-size: 0.9rem; 
+  font-weight: 600; 
+  margin-bottom: 0.4rem; 
+  color: #fff; 
+}
+ 
+.ticket-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.75);
+}
+ 
+.btn-ajouter {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(255,255,255,0.4);
+  border-radius: 0.75rem;
+  color: #fff;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: auto;
+}
+ 
+.btn-ajouter:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: #fff;
+  color: #fff;
+}
+ 
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+ 
+.popup-formulaire {
+  background: #1e1e2e;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 580px;
+  max-width: 90%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+}
+ 
+.fiche-fermer {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: inherit;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.dialogue-box {
+  background: #1e1e2e;
+  border: 1px solid #6366f1;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 460px;
+  max-width: 90%;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+ 
+.dialogue-champ {
+  margin-bottom: 1rem;
+}
+ 
+.dialogue-label {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin-bottom: 0.35rem;
+}
+ 
+.dialogue-input,
+.dialogue-select {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  box-sizing: border-box;
+}
+ 
+.dialogue-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+ 
+.dialogue-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+ 
+.btn-annuler {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+ 
+.btn-confirmer {
+  background: #6366f1;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+ 
+.btn-confirmer:disabled { 
+  opacity: 0.4; 
+  cursor: not-allowed; 
+}
+ 
+.badge-statut {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.statut-new { 
+  background: rgba(99,102,241,0.2); 
+  color: #a5b4fc; 
+  border: 1px solid #6366f1; 
+}
+
+.statut-in-progress { 
+  background: rgba(234,179,8,0.2); 
+  color: #fde047; 
+  border: 1px solid #ca8a04; 
+}
+
+.statut-closed { 
+  background: rgba(34,197,94,0.2); 
+  color: #86efac; 
+  border: 1px solid #22c55e; 
+}
+ 
+.badge-priority {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.priority-high { 
+  background: rgba(239,68,68,0.2); 
+  color: #fca5a5; 
+  border: 1px solid #ef4444; 
+}
+
+.priority-medium { 
+  background: rgba(249,115,22,0.2); 
+  color: #fdba74; 
+  border: 1px solid #f97316; 
+}
+
+.priority-low { 
+  background: rgba(34,197,94,0.2); 
+  color: #86efac; 
+  border: 1px solid #22c55e; 
+}
+ 
+.fiche-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.fiche-champ {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.fiche-label {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fiche-valeur { 
+  font-weight: 600; 
+}
+ 
+.traduction-label {
+  font-size: 0.8rem;
+  opacity: 0.55;
+  font-weight: 400;
+  margin-left: 0.3rem;
+}
+
+.elements-associes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.element-item {
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.element-tag {
+  font-weight: bold;
+  color: #a5b4fc;
+  font-size: 0.85rem;
+}
+
+.element-name {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.element-category {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.aucun-element {
+  opacity: 0.5;
+  font-style: italic;
+  padding: 0.5rem;
+}

@@ -108,6 +108,7 @@
 import { ref, computed } from 'vue'
 import axios from 'axios'
 import Papa from 'papaparse'
+import '../../styles/import.css'
 
 // ── Refs Assets ───────────────────────────────────────────────────────────────
 const inputAssets = ref(null)
@@ -138,8 +139,8 @@ const colonnesTickets = computed(() =>
 // ── Lecture CSV ───────────────────────────────────────────────────────────────
 const lireFichier = (file, cible) => {
   if (!file || !file.name.endsWith('.csv')) {
-    if (cible === 'assets') { msgAssets.value = '❌ Fichier .csv requis'; msgAssetsOk.value = false }
-    else { msgTickets.value = '❌ Fichier .csv requis'; msgTicketsOk.value = false }
+    if (cible === 'assets') { msgAssets.value = ' Fichier .csv requis'; msgAssetsOk.value = false }
+    else { msgTickets.value = ' Fichier .csv requis'; msgTicketsOk.value = false }
     return
   }
   Papa.parse(file, {
@@ -172,7 +173,7 @@ const importerAssets = async () => {
     erreursAssets.value = res.data.errors || []
     if (res.data.status === 'success') { previewAssets.value = null; nomFichierAssets.value = '' }
   } catch (err) {
-    msgAssets.value = `❌ Erreur : ${err.message}`
+    msgAssets.value = ` Erreur : ${err.message}`
     msgAssetsOk.value = false
   } finally { loadingAssets.value = false }
 }
@@ -184,13 +185,13 @@ const importerTickets = async () => {
   msgTickets.value = ''
   erreursTickets.value = []
   try {
-    const res = await axios.post('http://localhost:3000/api/import/tickets', { rows: previewTickets.value })
+    const res = await axios.post('http://localhost:3000/api/import/tickets', { rows: previewTickets.value }) //
     msgTickets.value = res.data.message
     msgTicketsOk.value = res.data.status === 'success'
     erreursTickets.value = res.data.errors || []
     if (res.data.status === 'success') { previewTickets.value = null; nomFichierTickets.value = '' }
   } catch (err) {
-    msgTickets.value = `❌ Erreur : ${err.message}`
+    msgTickets.value = ` Erreur : ${err.message}`
     msgTicketsOk.value = false
   } finally { loadingTickets.value = false }
 }
@@ -203,90 +204,5 @@ const annuler = (cible) => {
 </script>
 
 <style scoped>
-.deux-blocs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-@media (max-width: 700px) {
-  .deux-blocs { grid-template-columns: 1fr; }
-}
-.bloc {
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  overflow: hidden;
-}
-.bloc-header {
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  font-weight: bold;
-}
-.bleu { background: rgba(99,102,241,0.15); border-bottom: 1px solid rgba(99,102,241,0.3); }
-.vert { background: rgba(34,197,94,0.12); border-bottom: 1px solid rgba(34,197,94,0.3); }
-.bloc-sous-titre { font-size: 0.75rem; opacity: 0.6; font-weight: normal; }
-.drop-zone {
-  border: 2px dashed var(--border);
-  border-radius: 0.75rem;
-  margin: 1rem;
-  padding: 2rem 1rem;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.drop-zone:hover { background: rgba(255,255,255,0.04); }
-.apercu-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-.btn-annuler {
-  background: transparent;
-  border: 1px solid var(--border);
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  color: white;
-}
-.table-scroll {
-  max-height: 200px;
-  overflow: auto;
-  margin: 0 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  background: rgba(0,0,0,0.2);
-}
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; font-size: 0.8rem; }
-th { position: sticky; top: 0; background: var(--bg); z-index: 1; opacity: 0.7; }
-.btn-importer {
-  display: block;
-  width: calc(100% - 2rem);
-  margin: 0.75rem 1rem 1rem;
-  padding: 0.75rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  color: white;
-}
-.btn-bleu { background: #6366f1; }
-.btn-bleu:hover:not(:disabled) { background: #4f46e5; }
-.btn-vert { background: #16a34a; }
-.btn-vert:hover:not(:disabled) { background: #15803d; }
-.btn-importer:disabled { opacity: 0.5; cursor: not-allowed; }
-.msg {
-  margin: 0 1rem 1rem;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-.msg-ok { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
-.msg-err { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
 </style>

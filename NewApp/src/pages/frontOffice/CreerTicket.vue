@@ -41,7 +41,7 @@
 
     <!-- Sélection des éléments associés -->
     <div class="form-group">
-      <label>🔗 Éléments associés (optionnel)</label>
+      <label> Éléments associés (optionnel)</label>
       <p style="font-size:0.8rem; opacity:0.5; margin-bottom:0.5rem;">
         Sélectionnez un ou plusieurs éléments concernés par ce ticket
       </p>
@@ -117,7 +117,7 @@ const fetchElements = async () => {
 
 const soumettreTicket = async () => {
   if (!form.value.titre.trim()) {
-    message.value = '❌ Le titre est obligatoire.'
+    message.value = ' Le titre est obligatoire.'
     messageOk.value = false
     return
   }

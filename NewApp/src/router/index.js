@@ -7,12 +7,14 @@ import Dashboard from '../pages/backOffice/Dashboard.vue'
 import DataReset from '../pages/backOffice/DataReset.vue'
 import FileImport from '../pages/backOffice/FileImport.vue'
 import Tickets from '../pages/backOffice/Tickets.vue'
-import KanbanSettings from '../pages/backOffice/KanbanSettings.vue'
-//import Compteur from '../pages/backOffice/Compteur.vue'
-
+import CreerCouleurStatut from '../pages/backOffice/CreerCouleurStatut.vue'
+import Cout from '../pages/backOffice/Cout.vue'
 import ListeElements from '../pages/frontOffice/ListeElements.vue'
 import CreerTicket from '../pages/frontOffice/CreerTicket.vue'
 import Kanban from '../pages/frontOffice/Kanban.vue'
+
+
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -25,6 +27,7 @@ const router = createRouter({
         { path: '', component: ListeElements },
         { path: 'creer-ticket', component: CreerTicket },
         { path: 'kanban', component: Kanban },
+        
       ]
     },
 
@@ -43,7 +46,8 @@ const router = createRouter({
         { path: 'reset', component: DataReset },
         { path: 'import', component: FileImport },
         { path: 'tickets', component: Tickets },
-        { path: 'kanban-settings', component: KanbanSettings },
+        { path: 'color', component: CreerCouleurStatut },
+        { path: 'cout', component: Cout },
         //{ path: 'compteur', component: Compteur },
       ]
     },

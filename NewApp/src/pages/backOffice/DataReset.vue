@@ -12,13 +12,13 @@
     </div>
 
     <!-- Backup -->
-    <div style="margin-bottom: 2.5rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 1rem; border: 1px solid var(--border);">
+    <!-- <div style="margin-bottom: 2.5rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 1rem; border: 1px solid var(--border);">
       <h3>Sauvegarder les données</h3>
       <p style="opacity: 0.7;">Téléchargez une copie de toutes vos données SQLite locales avant de les supprimer.</p>
       <button @click="downloadBackup" style="background: var(--primary); margin-top: 0.5rem;">
         Télécharger Backup JSON
       </button>
-    </div>
+    </div> -->
 
     <!-- Reset tout -->
     <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(239,68,68,0.08); border-radius: 1rem; border: 1px solid rgba(239,68,68,0.3);">
@@ -69,7 +69,7 @@ const downloadBackup = async () => {
     link.click()
     URL.revokeObjectURL(url)
   } catch {
-    message.value = '❌ Erreur lors du téléchargement du backup'
+    message.value = ' Erreur lors du téléchargement du backup'
     messageOk.value = false
   }
 }
@@ -82,8 +82,10 @@ const resetData = async (type) => {
     components: 'les Components',
     consumables: 'les Consumables',
     licenses: 'les Licenses',
+    
+
   }
-  if (!confirm(`⚠️ Êtes-vous sûr de vouloir réinitialiser ${labels[type]} ?`)) return
+  if (!confirm(` Êtes-vous sûr de vouloir réinitialiser ${labels[type]} ?`)) return
 
   loading.value = true
   message.value = ''
@@ -95,7 +97,7 @@ const resetData = async (type) => {
     messageOk.value = res.data.status === 'success'
     detail.value = res.data.detail
   } catch (err) {
-    message.value = `❌ Erreur réseau : ${err.message}`
+    message.value = ` Erreur réseau : ${err.message}`
     messageOk.value = false
   } finally {
     loading.value = false

@@ -1,0 +1,42 @@
+rhf afindra any am terminer de mipotra bare de dialogue de mipotra montant otrina nanao anazy 
+rhf termnier de mipotra montant , cout tehirizina anaty sqlite 
+
+manao page, mitantara couts 
+
+
+
+boite de dialogue 
+ajoute montant 
+
+total vidina tickets , 
+
+
+manao saisie ana const rhf terminer 
+de manao tableau hoe reto cat de reto tols const donc sommena le izy 
+(ticket ray manana cateogrie ray na maromamr,tickets misy equimpent de equipement misy cateogrie
+)
+
+
+
+diviser par categorie donc zaraine roa . ao anaty sqlite 
+
+
+-mamorina page zah aloha (vita)
+-cout mapiseo anle cout ()
+fa mila manambotra anle montant  ao am fermeture de ticket:
+    -alefa anaty sqlite: db.js , mametaka montant ao am table tickets rhaah oe logique
+    -mapiseo anle izy amle details fichier aloha rhf valider le montant 
+
+
+page cout : 
+-manao tableau , categorie sy cout 
+-de avy eo alaina le cout, tickets ray manana categorie ana assets :
+1,03/06/2026,13:45,Tsy mandeha,hafahafa be,New,Medium,"[""PC-001""]" 
+
+de ao amle tableau zany tokony ataoko c est :
+-tab cat | tab montant 
+raha categire desk | 50 
+raha categ laptop | 50 
+
+divisena par categorie donc zaraina roa par c
+    
