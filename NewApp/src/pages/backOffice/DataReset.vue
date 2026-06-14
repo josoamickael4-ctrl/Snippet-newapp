@@ -23,7 +23,7 @@
     <!-- Reset tout -->
     <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(239,68,68,0.08); border-radius: 1rem; border: 1px solid rgba(239,68,68,0.3);">
       <h3>Réinitialisation complète</h3>
-      <p style="opacity: 0.7;">Supprime toutes les données SQLite ET Snipe-IT.</p>
+      <p style="opacity: 0.7;">Supprime toutes les données SQLite ET Snipe-IT</p>
       <button
         @click="resetData('all')"
         :disabled="loading"
