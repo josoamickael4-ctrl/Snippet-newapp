@@ -195,19 +195,6 @@
         Sera divise entre {{ ticketEnCours?.items ? JSON.parse(ticketEnCours.items).length : 0 }} asset(s)
       </p>
     </div>
-
-<div v-if="ticketDetail?.status === 'Closed' && coutTicketDetail.length > 0">
-     class="fiche-champ"
-     style="margin-top:1rem; border-color:#f59e0b;">
-  <div class="fiche-label" style="color:#fde047;">Montant par asset</div>
-  <div v-for="c in coutTicketDetail" :key="c.asset_tag"
-       style="margin-top:0.4rem; font-size:0.85rem; display:flex; justify-content:space-between;">
-    <span style="color:#a5b4fc; font-weight:bold;">{{ c.asset_tag }}</span>
-    <span style="opacity:0.6;">{{ c.categorie }}</span>
-    <span style="color:#fde047; font-weight:bold;">{{ c.montant }} Ar</span>
-  </div>
-</div>
-
  
         <div class="dialogue-actions">
           <button @click="annulerDialogue" class="btn-annuler">Annuler</button>
@@ -225,59 +212,39 @@
 </template>
  
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+
+import { ref, onMounted, computed } from 'vue' 
 import axios from 'axios'
 import FormulaireTicket from '../../components/FormulaireTicket.vue'
-
-const coutTicketDetail = ref([])
-
+ 
 const colonnes = [
   { statut: 'New',         label: 'Nouveau' },
   { statut: 'In Progress', label: 'In Progress' },
   { statut: 'Closed',      label: 'Terminé' },
 ]
-
+ 
 const tickets            = ref([])
 const loading            = ref(true)
 const ticketEnCours      = ref(null)
 const colonneEnSurvol    = ref(null)
 const dialogueVisible    = ref(false)
 const colonneDestination = ref(null)
-const montantTicket      = ref(0)
+const montantTicket = ref(0)
 const popupAjoutVisible  = ref(false)
 const configStatuts      = ref({})
 const ticketDetail       = ref(null)
-
+ 
+// champs éditables dans le dialogue drag & drop
 const editTitre       = ref('')
 const editDescription = ref('')
 const editPriorite    = ref('Medium')
-
-watch(ticketDetail, async (ticket) => {
-  coutTicketDetail.value = []
-
-  if (!ticket || ticket.status !== 'Closed') return
-
-  try {
-    const res = await axios.get('http://localhost:3000/api/tickets/couts')
-    const detail = res.data.detail || []
-
-    coutTicketDetail.value = detail.filter(
-      c => c.num_ticket === ticket.num_ticket
-    )
-
-    console.log('couts du ticket:', coutTicketDetail.value)
-  } catch (e) {
-    console.error('erreur chargement cout ticket:', e)
-  }
-})
-
-const labelColonne = (statut) =>
-  colonnes.find(c => c.statut === statut)?.label || statut
-
+ 
+const labelColonne = (statut) => colonnes.find(c => c.statut === statut)?.label || statut
+ 
 const chargerTickets = async () => {
   try {
     const res = await axios.get('http://localhost:3000/api/tickets')
-    console.log('tickets recus:', res.data)
+    console.log('tickets recus:', res.data)        // <-- ajoute ici
     tickets.value = res.data
   } catch (e) {
     console.error('Erreur chargement tickets:', e)
@@ -285,13 +252,11 @@ const chargerTickets = async () => {
     loading.value = false
   }
 }
-
+ 
 const listeCouleur = async () => {
   try {
     const res = await axios.get('http://localhost:3000/api/tickets/kanban-config')
-
-    console.log('config kanban recue:', res.data)
-
+    console.log('config kanban recue:', res.data)  // <-- ajoute ici
     res.data.forEach(row => {
       configStatuts.value[row.statut_key] = {
         color: row.color,
@@ -302,25 +267,20 @@ const listeCouleur = async () => {
     console.error('Erreur chargement config kanban:', e)
   }
 }
-
+ 
 const quandTicketCree = async () => {
   popupAjoutVisible.value = false
   await chargerTickets()
 }
-
+ 
 const itemsParsed = computed(() => {
   if (!ticketDetail.value?.items) return []
-
-  console.log('items brut du ticket:', ticketDetail.value.items)
-
+  console.log('items brut du ticket:', ticketDetail.value.items)  // <-- ajoute ici
   try {
-    const parsed =
-      typeof ticketDetail.value.items === 'string'
-        ? JSON.parse(ticketDetail.value.items)
-        : ticketDetail.value.items
-
-    console.log('items apres parse:', parsed)
-
+    const parsed = typeof ticketDetail.value.items === 'string'
+      ? JSON.parse(ticketDetail.value.items)
+      : ticketDetail.value.items
+    console.log('items apres parse:', parsed)                     // <-- ajoute ici
     return Array.isArray(parsed) ? parsed : []
   } catch {
     console.error('erreur JSON.parse items:', ticketDetail.value.items)
@@ -328,62 +288,35 @@ const itemsParsed = computed(() => {
   }
 })
 
-const ticketsParColonne = (statut) =>
-  tickets.value.filter(t => t.status === statut)
-
-const commencerGlisser = (ticket) => {
-  ticketEnCours.value = ticket
-}
-
-const survolerColonne = (statut) => {
-  colonneEnSurvol.value = statut
-}
-
-const finGlisser = () => {
-  colonneEnSurvol.value = null
-}
-
+const ticketsParColonne = (statut) => tickets.value.filter(t => t.status === statut)
+ 
+const commencerGlisser = (ticket) => { ticketEnCours.value = ticket }
+const survolerColonne  = (statut)  => { colonneEnSurvol.value = statut }
+const finGlisser       = ()        => { colonneEnSurvol.value = null }
+ 
 const deposerTicket = (nouveauStatut) => {
   colonneEnSurvol.value = null
+  if (!ticketEnCours.value || ticketEnCours.value.status === nouveauStatut) return
 
-  if (
-    !ticketEnCours.value ||
-    ticketEnCours.value.status === nouveauStatut
-  ) return
-
-  console.log('ticket glisse:', ticketEnCours.value)
-  console.log('destination:', nouveauStatut)
+  console.log('ticket glisse:', ticketEnCours.value)       // <-- ajoute ici
+  console.log('destination:', nouveauStatut)               // <-- ajoute ici
 
   colonneDestination.value = nouveauStatut
-
-  editTitre.value       = ticketEnCours.value.titre || ''
+  editTitre.value       = ticketEnCours.value.titre       || ''
   editDescription.value = ticketEnCours.value.description || ''
-  editPriorite.value    = ticketEnCours.value.priority || 'Medium'
-
+  editPriorite.value    = ticketEnCours.value.priority    || 'Medium'
   montantTicket.value = 0
   dialogueVisible.value = true
 }
-
-const changerStatut = async (
-  ticket,
-  nouveauStatut,
-  payload = {}
-) => {
+ 
+const changerStatut = async (ticket, nouveauStatut, payload = {}) => {
   try {
-    const res = await axios.patch(
-      `http://localhost:3000/api/tickets/${ticket.id}`,
-      {
-        status: nouveauStatut,
-        ...payload,
-      }
-    )
-
-    console.log('reponse serveur PATCH:', res.data)
-
-    const index = tickets.value.findIndex(
-      t => t.id === ticket.id
-    )
-
+    const res = await axios.patch(`http://localhost:3000/api/tickets/${ticket.id}`, {
+      status: nouveauStatut,
+      ...payload,
+    })
+    console.log('reponse serveur PATCH:', res.data)        // <-- ajoute ici
+    const index = tickets.value.findIndex(t => t.id === ticket.id)
     if (index !== -1) {
       tickets.value[index] = {
         ...tickets.value[index],
@@ -395,42 +328,32 @@ const changerStatut = async (
     console.error('Erreur changement statut:', e)
   }
 }
-
+ 
 const annulerDialogue = () => {
-  dialogueVisible.value = false
+  dialogueVisible.value    = false
   colonneDestination.value = null
-  montantTicket.value = 0
-  ticketEnCours.value = null
+  montantTicket.value      = 0
+  ticketEnCours.value      = null
 }
-
+ 
 const confirmerDeplacement = async () => {
   const payload = {
-    titre: editTitre.value,
+    titre:       editTitre.value,
     description: editDescription.value,
-    priority: editPriorite.value,
-
-    ...(colonneDestination.value === 'Closed'
-      ? {
-          montant: montantTicket.value,
-          items: ticketEnCours.value.items,
-        }
-      : {}),
+    priority:    editPriorite.value,
+    ...(colonneDestination.value === 'Closed' ? {
+      montant: montantTicket.value,
+      items:   ticketEnCours.value.items
+    } : {}),
   }
-
   console.log('payload envoye au serveur:', payload)
-
-  await changerStatut(
-    ticketEnCours.value,
-    colonneDestination.value,
-    payload
-  )
-
-  dialogueVisible.value = false
-  montantTicket.value = 0
+  await changerStatut(ticketEnCours.value, colonneDestination.value, payload)
+  dialogueVisible.value    = false
+  montantTicket.value      = 0
   colonneDestination.value = null
-  ticketEnCours.value = null
+  ticketEnCours.value      = null
 }
-
+ 
 onMounted(() => {
   chargerTickets()
   listeCouleur()
