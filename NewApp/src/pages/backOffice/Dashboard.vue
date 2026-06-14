@@ -12,17 +12,45 @@
     <div class="stats-grid" style="margin-top: 2rem;">
       <div class="stat-card">
         <div class="stat-number">{{ snipeAssets }}</div>
-        <div class="stat-label"> Assets (Snipe-IT)</div>
+        <div class="stat-label"> Assets (Hardware)</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{{ snipeLicenses }}</div>
-        <div class="stat-label"> Licenses (Snipe-IT)</div>
+        <div class="stat-label"> Licenses </div>
       </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ snipeAccessories }}</div>
+      <div class="stat-label">Accessories</div>
+    </div> 
+    <div class="stat-card">
+      <div class="stat-number">{{  snipeComponents }}</div>
+      <div class="stat-label">Components</div>
+    </div>  
+    <div class="stat-card">
+      <div class="stat-number">{{  snipeConsumables }}</div>
+      <div class="stat-label">Consumables</div>
+    </div>
       <div class="stat-card">
         <div class="stat-number">{{ tickets.length }}</div>
         <div class="stat-label"> Tickets (SQLite)</div>
       </div>
+    <!-- <div class="stat-card" style="border: 1px solid var(--primary); opacity: 0.8;">
+      <div class="stat-number">{{ snipeTotal }}</div>
+      <div class="stat-label">Total éléments</div>
+    </div> -->
     </div>
+
+    <!-- Assets par catégorie -->
+<div style="margin-top: 2rem;" v-if="Object.keys(assetsParCategorie).length > 0">
+  <h2>Assets par catégorie</h2>
+  <div class="stats-grid" style="margin-top: 1rem;">
+    <div class="stat-card" v-for="(count, categorie) in assetsParCategorie" :key="categorie">
+      <div class="stat-number">{{ count }}</div>
+      <div class="stat-label">{{ categorie }}</div>
+    </div>
+  </div>
+</div>
+
 
     <!-- Tickets par statut -->
     <div style="margin-top: 2rem;" v-if="tickets.length > 0">
@@ -77,7 +105,11 @@ import axios from 'axios'
 const snipeStatus = ref('Chargement...')
 const snipeAssets = ref(0)
 const snipeLicenses = ref(0)
+const snipeAccessories = ref(0)
+const snipeComponents = ref(0)
+const snipeConsumables = ref(0)
 const tickets = ref([])
+const assetsParCategorie = ref({})  // ← ici avec les autres
 
 const ticketsParStatut = computed(() => {
   const counts = {}
@@ -95,13 +127,29 @@ const fetchAll = async () => {
   } catch (e) { console.error('tickets:', e) }
 
   try {
-    const [assetsRes, licensesRes] = await Promise.all([
-      axios.get('http://localhost:3000/api/snipe-it/hardware?limit=1'),
+    const [assetsRes, licensesRes, accRes, compRes, consRes] = await Promise.all([
+      axios.get('http://localhost:3000/api/snipe-it/hardware?limit=500'),
       axios.get('http://localhost:3000/api/snipe-it/licenses?limit=1'),
+      axios.get('http://localhost:3000/api/snipe-it/accessories?limit=1'),
+      axios.get('http://localhost:3000/api/snipe-it/components?limit=1'),
+      axios.get('http://localhost:3000/api/snipe-it/consumables?limit=1'),
     ])
     snipeAssets.value = assetsRes.data?.total || 0
     snipeLicenses.value = licensesRes.data?.total || 0
+    snipeAccessories.value = accRes.data?.total || 0
+    snipeComponents.value = compRes.data?.total || 0
+    snipeConsumables.value = consRes.data?.total || 0
     snipeStatus.value = 'Connecté'
+
+    // ← comptage par catégorie ICI, à l'intérieur de fetchAll
+    const rows = assetsRes.data?.rows || []
+    const counts = {}
+    rows.forEach(asset => {
+      const cat = asset.category?.name || 'Sans catégorie'
+      counts[cat] = (counts[cat] || 0) + 1
+    })
+    assetsParCategorie.value = counts
+
   } catch (e) {
     snipeStatus.value = 'Erreur de connexion'
   }

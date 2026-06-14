@@ -138,14 +138,18 @@ const colonnesTickets = computed(() =>
 // ── Lecture CSV ───────────────────────────────────────────────────────────────
 const lireFichier = (file, cible) => {
   if (!file || !file.name.endsWith('.csv')) {
-    if (cible === 'assets') { msgAssets.value = '❌ Fichier .csv requis'; msgAssetsOk.value = false }
-    else { msgTickets.value = '❌ Fichier .csv requis'; msgTicketsOk.value = false }
+    console.warn('fichier invalide ou absent:', file)   // <-- ici
+    if (cible === 'assets') { msgAssets.value = ' Fichier .csv requis'; msgAssetsOk.value = false }
+    else { msgTickets.value = ' Fichier .csv requis'; msgTicketsOk.value = false }
     return
   }
+  console.log('lecture fichier:', file.name, '| cible:', cible)  // <-- ici
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
     complete: (results) => {
+      console.log('parse CSV termine:', results.data.length, 'lignes')  // <-- ici
+      console.log('premiere ligne:', results.data[0])                   // <-- ici
       if (cible === 'assets') {
         nomFichierAssets.value = file.name
         previewAssets.value = results.data
@@ -165,14 +169,19 @@ const importerAssets = async () => {
   loadingAssets.value = true
   msgAssets.value = ''
   erreursAssets.value = []
+  console.log('debut import assets, nb lignes:', previewAssets.value.length)  // <-- ici
+  console.log('exemple ligne 1:', previewAssets.value[0])                     // <-- ici
   try {
     const res = await axios.post('http://localhost:3000/api/import/assets', { rows: previewAssets.value })
+    console.log('reponse import assets:', res.data)                           // <-- ici
+    console.log('erreurs:', res.data.errors)                                  // <-- ici
     msgAssets.value = res.data.message
     msgAssetsOk.value = res.data.status === 'success'
     erreursAssets.value = res.data.errors || []
     if (res.data.status === 'success') { previewAssets.value = null; nomFichierAssets.value = '' }
   } catch (err) {
-    msgAssets.value = `❌ Erreur : ${err.message}`
+    console.error('erreur import assets:', err.response?.data || err.message) // <-- ici
+    msgAssets.value = ` Erreur : ${err.message}`
     msgAssetsOk.value = false
   } finally { loadingAssets.value = false }
 }
@@ -183,17 +192,23 @@ const importerTickets = async () => {
   loadingTickets.value = true
   msgTickets.value = ''
   erreursTickets.value = []
+  console.log('debut import tickets, nb lignes:', previewTickets.value.length) // <-- ici
+  console.log('exemple ligne 1:', previewTickets.value[0])                     // <-- ici
   try {
     const res = await axios.post('http://localhost:3000/api/import/tickets', { rows: previewTickets.value })
+    console.log('reponse import tickets:', res.data)                           // <-- ici
+    console.log('erreurs:', res.data.errors)                                   // <-- ici
     msgTickets.value = res.data.message
     msgTicketsOk.value = res.data.status === 'success'
     erreursTickets.value = res.data.errors || []
     if (res.data.status === 'success') { previewTickets.value = null; nomFichierTickets.value = '' }
   } catch (err) {
-    msgTickets.value = `❌ Erreur : ${err.message}`
+    console.error('erreur import tickets:', err.response?.data || err.message) // <-- ici
+    msgTickets.value = ` Erreur : ${err.message}`
     msgTicketsOk.value = false
   } finally { loadingTickets.value = false }
 }
+
 
 // ── Annuler ───────────────────────────────────────────────────────────────────
 const annuler = (cible) => {

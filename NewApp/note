@@ -22,10 +22,9 @@ Navigateur               Ton PC
 └─────────────────┘      │ = API + SQLite   │      └──────────────┘
                          └──────────────────┘
 
-
-                         
-
+trenno : translat
 
 
-trenno : translat 
 
+29/30 assets importés dans Snipe-IT
+⚠️ CAM-002 : {"purchase_date":["The purchase date field must be a valid date.","The purchase date must be a valid date in YYYY-MM-DD format"],"purchase_cost":["The purchase cost field must be a number.","The purchase cost field must be greater than or equal to 0."]}

@@ -2,6 +2,7 @@
   <nav>
     <router-link to="/"> Éléments</router-link>
     <router-link to="/creer-ticket"> Créer un ticket</router-link>
+    <router-link to="/kanban"> Kanban</router-link>
     <span @click="allerAdmin" style="margin-left: auto; opacity: 0.5; font-size: 0.8rem; cursor: pointer;">
       Admin →
     </span>

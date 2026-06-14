@@ -81,6 +81,13 @@
           </div>
         </div>
 
+        <div class="fiche-champ" style="margin-top:1rem; border-color: #22c55e;" v-if="ticketSelectionne.resolution">
+  <div class="fiche-label" style="color:#86efac;">✓ Note de résolution</div>
+  <div class="fiche-valeur" style="margin-top:0.5rem; line-height:1.6; color:#86efac;">
+    {{ ticketSelectionne.resolution }}
+  </div>
+</div>
+
         <div class="fiche-champ" style="margin-top:1rem;" v-if="ticketSelectionne.items && ticketSelectionne.items !== '[]'">
           <div class="fiche-label"> Éléments associés</div>
           <div class="fiche-valeur">{{ ticketSelectionne.items }}</div>

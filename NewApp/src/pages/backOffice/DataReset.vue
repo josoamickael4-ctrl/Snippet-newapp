@@ -69,7 +69,7 @@ const downloadBackup = async () => {
     link.click()
     URL.revokeObjectURL(url)
   } catch {
-    message.value = '❌ Erreur lors du téléchargement du backup'
+    message.value = ' Erreur lors du téléchargement du backup'
     messageOk.value = false
   }
 }
@@ -82,8 +82,10 @@ const resetData = async (type) => {
     components: 'les Components',
     consumables: 'les Consumables',
     licenses: 'les Licenses',
+    
+
   }
-  if (!confirm(`⚠️ Êtes-vous sûr de vouloir réinitialiser ${labels[type]} ?`)) return
+  if (!confirm(` Êtes-vous sûr de vouloir réinitialiser ${labels[type]} ?`)) return
 
   loading.value = true
   message.value = ''
@@ -95,7 +97,7 @@ const resetData = async (type) => {
     messageOk.value = res.data.status === 'success'
     detail.value = res.data.detail
   } catch (err) {
-    message.value = `❌ Erreur réseau : ${err.message}`
+    message.value = ` Erreur réseau : ${err.message}`
     messageOk.value = false
   } finally {
     loading.value = false

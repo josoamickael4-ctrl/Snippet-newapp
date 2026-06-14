@@ -1,0 +1,5 @@
+Frontoffice 
+
+L'utilisateur prend un ticket    → événement : dragstart
+Il survole une colonne           → événement : dragover
+Il lâche le ticket               → événement : drop
